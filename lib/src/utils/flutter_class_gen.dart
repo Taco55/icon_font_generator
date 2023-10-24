@@ -14,7 +14,11 @@ const _kDefaultFontFileName = 'icon_font_generator_icons.otf';
 ///
 /// Returns a new string.
 String _getVarName(String string) {
-  final replaced = string.replaceAll(RegExp(r'[^a-zA-Z0-9_$]'), '');
+  final re = RegExp(r'(?<=noun-)(.*)(?=-)');
+  final match = re.firstMatch(string);
+  final newString = (match != null ? match.group(0)! : string).camelCase;
+
+  final replaced = newString.replaceAll(RegExp(r'[^a-zA-Z0-9_$]'), '');
   return RegExp(r'^[a-zA-Z$].*').firstMatch(replaced)?.group(0) ?? '';
 }
 
@@ -100,13 +104,7 @@ class FlutterClassGenerator {
     final charCode = glyphMeta.charCode!;
     final iconName = glyphMeta.name!;
 
-    final varNameComplete = _iconVarNames[index];
-
-    final re = RegExp(r'(?<=-)(.*)(?=-)');
-    final varName = re.firstMatch(varNameComplete) ?? varNameComplete;
-    print(varName);
-    // if (match != null) print(match.group(0));
-
+    final varName = _iconVarNames[index];
     final hexCode = charCode.toRadixString(16);
 
     final posParamList = [
