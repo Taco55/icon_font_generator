@@ -100,7 +100,13 @@ class FlutterClassGenerator {
     final charCode = glyphMeta.charCode!;
     final iconName = glyphMeta.name!;
 
-    final varName = _iconVarNames[index];
+    final varNameComplete = _iconVarNames[index];
+
+    final re = RegExp(r'(?<=-)(.*)(?=-)');
+    final varName = re.firstMatch(varNameComplete) ?? varNameComplete;
+    print(varName);
+    // if (match != null) print(match.group(0));
+
     final hexCode = charCode.toRadixString(16);
 
     final posParamList = [
