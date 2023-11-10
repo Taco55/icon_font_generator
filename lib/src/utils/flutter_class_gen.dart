@@ -13,10 +13,14 @@ const _kDefaultFontFileName = 'icon_font_generator_icons.otf';
 /// Removes any characters that are not valid for variable name.
 ///
 /// Returns a new string.
-String _getVarName(String string) {
-  final re = RegExp(r'(?<=noun-)(.*)(?=-)');
-  final match = re.firstMatch(string);
-  final newString = (match != null ? match.group(0)! : string).camelCase;
+String _getVarName(String string, {bool formatNounProjectFile = false}) {
+  String newString = string;
+
+  if (formatNounProjectFile) {
+    final re = RegExp(r'(?<=noun-)(.*)(?=-)');
+    final match = re.firstMatch(string);
+    newString = (match != null ? match.group(0)! : string).camelCase;
+  }
 
   final replaced = newString.replaceAll(RegExp(r'[^a-zA-Z0-9_$]'), '');
   return RegExp(r'^[a-zA-Z$].*').firstMatch(replaced)?.group(0) ?? '';
@@ -56,8 +60,8 @@ class FlutterClassGenerator {
     final iconNameSet = <String>{};
 
     return glyphList.map((g) {
-      final baseName =
-          _getVarName(p.basenameWithoutExtension(g.metadata.name!)).camelCase;
+      final baseName = _getVarName(p.basenameWithoutExtension(g.metadata.name!),
+          formatNounProjectFile: true);
       final usingDefaultName = baseName.isEmpty;
 
       var variableName = usingDefaultName ? _kUnnamedIconName : baseName;
